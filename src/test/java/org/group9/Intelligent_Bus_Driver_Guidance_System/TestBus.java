@@ -1,13 +1,12 @@
 package org.group9.Intelligent_Bus_Driver_Guidance_System;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import org.junit.jupiter.api.Test;
 
 class TestBus {
@@ -37,6 +36,16 @@ class TestBus {
 	@Test
 	void b1_nonDigitFails() {
 		assertFalse(Bus.isValidID("1234567A"));
+	}
+
+	@Test
+	void b1_nullBusIdFails() {
+		assertFalse(Bus.isValidID(null));
+	}
+
+	@Test
+	void b1_tooLongBusIdFails() {
+		assertFalse(Bus.isValidID("123456789"));
 	}
 
 	@Test
@@ -98,6 +107,12 @@ class TestBus {
 	}
 
 	@Test
+	void b4_driverWithExactlyFiveYearsCanDriveElectric() {
+		Bus bus = new Bus("12345678", 20, 80.0, "Electricity");
+		assertTrue(bus.canBeDrivenBy(driver(30, 5, "Heavy")));
+	}
+
+	@Test
 	void b4_experiencedDriverCanDriveElectric() {
 		Bus bus = new Bus("12345678", 20, 80.0, "Electricity");
 		assertTrue(bus.canBeDrivenBy(driver(30, 5, "Heavy")));
@@ -121,6 +136,12 @@ class TestBus {
 	void b5_heavyLicenceCanDriveHybrid() {
 		Bus bus = new Bus("12345678", 20, 80.0, "Hybrid");
 		assertTrue(bus.canBeDrivenBy(driver(30, 10, "Heavy")));
+	}
+
+	@Test
+	void b5_publicTransportLicenceCanDriveHybrid() {
+		Bus bus = new Bus("12345678", 20, 80.0, "Hybrid");
+		assertTrue(bus.canBeDrivenBy(driver(30, 10, "PublicTransport")));
 	}
 
 	@Test
