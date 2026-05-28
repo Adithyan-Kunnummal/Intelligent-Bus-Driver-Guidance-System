@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
 
 class TestDriver {
@@ -142,4 +141,38 @@ class TestDriver {
 		DriverRepository repo = new DriverRepository();
 		assertThrows(IllegalArgumentException.class, () -> repo.update(sample("23#$abcdAB")));
 	}
+
+	// ---- Additional driver tests by kj996 ----
+
+	@Test
+	void d1_nullDriverIdFails() {
+		assertFalse(Driver.isValidID(null));
+	}
+
+	@Test
+	void d2_nullAddressFails() {
+		assertFalse(Driver.isValidAddress(null));
+	}
+
+	@Test
+	void d3_nullBirthdateFails() {
+		assertFalse(Driver.isValidBirthdate(null));
+	}
+
+	@Test
+	void d4_invalidLicenseTypeRejectedByRepository() {
+		DriverRepository repo = new DriverRepository();
+
+		Driver invalidDriver = new Driver(
+				"24#$abcdCD",
+				"Alex Tan",
+				5,
+				"Motorcycle",
+				"88|King St|Melbourne|VIC|AU",
+				"15-05-1998"
+		);
+
+		assertThrows(IllegalArgumentException.class, () -> repo.add(invalidDriver));
+	}
+
 }
