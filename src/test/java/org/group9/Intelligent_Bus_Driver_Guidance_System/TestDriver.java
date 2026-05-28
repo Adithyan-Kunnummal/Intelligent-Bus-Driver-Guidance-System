@@ -21,8 +21,13 @@ class TestDriver {
 	}
 
 	@Test
-	void d1_wrongLengthFails() {
+	void d1_tooShortFails() {
 		assertFalse(Driver.isValidID("23#$abAB"));
+	}
+	
+	@Test
+	void d1_tooLongFails() {
+		assertFalse(Driver.isValidID("23#$abcdeAB"));
 	}
 
 	@Test
@@ -33,6 +38,11 @@ class TestDriver {
 	@Test
 	void d1_fewerThanTwoSpecialCharsFails() {
 		assertFalse(Driver.isValidID("23abcdefAB"));
+	}
+	
+	@Test
+	void d1_allSpecialCharsbetween2and9Passes() {
+		assertTrue(Driver.isValidID("23@@@@@@AB"));
 	}
 
 	@Test
@@ -68,6 +78,11 @@ class TestDriver {
 	void d2_tooManyPartsFails() {
 		assertFalse(Driver.isValidAddress("12|Main St|Springfield|VIC|AU|Extra"));
 	}
+	
+	@Test
+	void d2_wrongDelimiterFails() {
+		assertFalse(Driver.isValidAddress("12,Main St,Springfield,VIC,AU,Extra"));
+	}
 
 	// ---- D3: Birthdate format ----
 
@@ -77,8 +92,13 @@ class TestDriver {
 	}
 
 	@Test
-	void d3_wrongSeparatorFails() {
+	void d3_wrongFormatFails() {
 		assertFalse(Driver.isValidBirthdate("1990-01-01"));
+	}
+	
+	@Test
+	void d3_wrongSeparatorFails() {
+		assertFalse(Driver.isValidBirthdate("29,02,2020"));
 	}
 
 	@Test
@@ -94,11 +114,30 @@ class TestDriver {
 	// ---- D4: License update restriction (>10 years) ----
 
 	@Test
-	void d4_experiencedDriverCannotChangeLicense() {
+	void d4_experienceMoreThanTenYearsCannotChangeLicense() {
 		DriverRepository repo = new DriverRepository();
 		repo.add(new Driver("23#$abcdAB", "Jane", 15, "Heavy", "12|Main St|Springfield|VIC|AU", "01-01-1980"));
 		Driver changed = new Driver("23#$abcdAB", "Jane", 15, "Medium", "12|Main St|Springfield|VIC|AU", "01-01-1980");
 		assertThrows(IllegalArgumentException.class, () -> repo.update(changed));
+	}
+	
+	@Test
+    void d4_experienceExactlyTenYearsCanChangeLicense() {
+        DriverRepository repo = new DriverRepository();
+        repo.add(new Driver("23#$abcdAB", "Jane", 10, "Heavy",
+                "12|Main St|Springfield|VIC|AU", "01-01-1980"));
+        Driver changed = new Driver("23#$abcdAB", "Jane", 10, "Medium",
+                "12|Main St|Springfield|VIC|AU", "01-01-1980");
+        assertDoesNotThrow(() -> repo.update(changed),
+                "Exactly 10 years is not MORE THAN 10; license change should be allowed");
+    }
+	
+	@Test
+	void d4_experienceLessThanTenYearsCanChangeLicense() {
+		DriverRepository repo = new DriverRepository();
+		repo.add(new Driver("23#$abcdAB", "Jane", 5, "Heavy", "12|Main St|Springfield|VIC|AU", "01-01-1990"));
+		Driver changed = new Driver("23#$abcdAB", "Jane", 5, "Light", "12|Main St|Springfield|VIC|AU", "01-01-1990");
+		assertDoesNotThrow(() -> repo.update(changed));
 	}
 
 	@Test
@@ -108,14 +147,14 @@ class TestDriver {
 		Driver changed = new Driver("23#$abcdAB", "Jane", 15, "Heavy", "99|New Rd|Geelong|VIC|AU", "01-01-1980");
 		assertDoesNotThrow(() -> repo.update(changed));
 	}
-
-	@Test
-	void d4_inexperiencedDriverCanChangeLicense() {
+	
+	void d4_experiencedDriverUpdateWithInvalidLicenseTypeFails() {
 		DriverRepository repo = new DriverRepository();
-		repo.add(new Driver("23#$abcdAB", "Jane", 5, "Heavy", "12|Main St|Springfield|VIC|AU", "01-01-1990"));
-		Driver changed = new Driver("23#$abcdAB", "Jane", 5, "Light", "12|Main St|Springfield|VIC|AU", "01-01-1990");
-		assertDoesNotThrow(() -> repo.update(changed));
+		repo.add(new Driver("23#$abcdAB", "Jane", 15, "Heavy", "12|Main St|Springfield|VIC|AU", "01-01-1980"));
+		Driver changed = new Driver("23#$abcdAB", "Jane", 15, "Motorcycle", "99|New Rd|Geelong|VIC|AU", "01-01-1980");
+		assertThrows(IllegalArgumentException.class, () -> repo.update(changed));
 	}
+
 
 	// ---- D5: Immutable fields (driverID, name) ----
 

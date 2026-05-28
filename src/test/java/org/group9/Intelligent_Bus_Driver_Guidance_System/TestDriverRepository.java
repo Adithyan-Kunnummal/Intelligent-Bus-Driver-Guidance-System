@@ -41,6 +41,19 @@ class TestDriverRepository {
 		assertThrows(IllegalArgumentException.class, () -> repo.add(invalid));
 		assertEquals(0, new DriverRepository(path).count());
 	}
+	
+	@Test
+    void duplicateIdIsRejectedAndNotPersisted() {
+        String path = filePath();
+        DriverRepository repo = new DriverRepository(path);
+        repo.add(valid("23#$abcdAB"));
+ 
+        assertThrows(IllegalArgumentException.class, () -> repo.add(valid("23#$abcdAB")));
+ 
+        // Reload from file: must still have exactly 1 record
+        assertEquals(1, new DriverRepository(path).count(),
+                "File must contain only the first successfully added driver");
+    }
 
 	@Test
 	void updatesArePersisted() {

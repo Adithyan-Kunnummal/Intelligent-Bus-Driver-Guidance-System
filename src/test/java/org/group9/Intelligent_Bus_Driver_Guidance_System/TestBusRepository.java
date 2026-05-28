@@ -48,6 +48,18 @@ class TestBusRepository {
 		assertEquals(35, loaded.getCapacity());
 		assertEquals("Hybrid", loaded.getFuelType());
 	}
+	
+	 @Test
+	    void capacityIncreaseRejectedAndNotPersisted() {
+	        String path = filePath();
+	        BusRepository repo = new BusRepository(path);
+	        repo.add(new Bus("12345678", 40, 80.0, "Diesel"));
+	 
+	        assertThrows(IllegalArgumentException.class, () -> repo.update(new Bus("12345678", 50, 80.0, "Diesel")));
+	 
+	        Bus reloaded = new BusRepository(path).retrieve("12345678");
+	        assertEquals(40, reloaded.getCapacity());
+	    }
 
 	@Test
 	void countReflectsStoredRecordsAcrossReload() {
