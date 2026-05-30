@@ -191,4 +191,16 @@ class TestBus {
 		Bus bus = new Bus("12345678", 20, 80.0, "Electric");
 		assertTrue(bus.canBeDrivenBy(driver(30, 10, "PublicTransport")));
 	}
+
+	// ---- Additional driver tests by tlee ----
+	@Test
+	void b1_nullBusIdFails() {
+		assertFalse(Bus.isValidID(null));
+	}
+
+	@Test
+	void b1_emptyBusIdFails() {
+		assertFalse(Bus.isValidID(""));
+	}
+
 }
