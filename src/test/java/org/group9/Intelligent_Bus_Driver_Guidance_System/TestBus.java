@@ -194,13 +194,24 @@ class TestBus {
 
 	// ---- Additional driver tests by tlee ----
 	@Test
-	void b1_nullBusIdFails() {
-		assertFalse(Bus.isValidID(null));
+	void b1_emptyBusIdFails() {
+		assertFalse(Bus.isValidID(""));
 	}
 
 	@Test
-	void b1_emptyBusIdFails() {
-		assertFalse(Bus.isValidID(""));
+	void b1_spacesInBusIdFail() {
+		assertFalse(Bus.isValidID("1234 678"));
+	}
+
+	@Test
+	void b2_negativeCapacityFails() {
+		assertThrows(IllegalArgumentException.class, () -> new Bus("12345678", -1, 80.0, "Diesel"));
+	}
+
+	@Test
+	void b3_nullDriverFails() {
+		Bus bus = new Bus("12345678", 50, 80.0, "Diesel");
+		assertThrows(IllegalArgumentException.class, () -> bus.canBeDrivenBy(null));
 	}
 
 }
