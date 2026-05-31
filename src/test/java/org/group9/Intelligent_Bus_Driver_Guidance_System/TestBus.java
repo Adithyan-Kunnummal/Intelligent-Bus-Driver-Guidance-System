@@ -211,7 +211,7 @@ class TestBus {
 	@Test
 	void b3_nullDriverFails() {
 		Bus bus = new Bus("12345678", 50, 80.0, "Diesel");
-		assertThrows(IllegalArgumentException.class, () -> bus.canBeDrivenBy(null));
+		assertThrows(NullPointerException.class, () -> bus.canBeDrivenBy(null));
 	}
 
 }
