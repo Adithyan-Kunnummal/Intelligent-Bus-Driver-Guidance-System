@@ -10,6 +10,9 @@ public class Bus {
 	private String fuelType;
 
 	public Bus(String busID, int capacity, double fuelLevel, String fuelType) {
+
+		if (capacity < 1) throw new IllegalArgumentException();
+
 		this.busID = busID;
 		this.capacity = capacity;
 		this.fuelLevel = fuelLevel;
