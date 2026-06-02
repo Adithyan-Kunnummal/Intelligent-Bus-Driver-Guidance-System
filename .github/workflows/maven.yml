@@ -8,6 +8,7 @@
 
 name: Github Actions Java Test Workflow
 run-name: Running Tests on Github Actions
+
 on:
   push:
     branches: [ "master" ]
@@ -17,22 +18,46 @@ on:
 jobs:
   java-test:
     runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository code
-      uses: actions/checkout@v4
-      
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'adopt'
 
-    - name: Run tests
-      run: mvn test
-      
-    - name: Upload Test Output Text Files
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: persistent-test-txt-files
-        path: test-output/
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Run Maven tests
+        run: mvn clean test
+
+      - name: List generated files
+        if: always()
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Project files:"
+          ls -la
+          echo "Target folder:"
+          ls -la target || true
+          echo "Surefire reports:"
+          ls -la target/surefire-reports || true
+          echo "Test output folder:"
+          ls -la test-output || true
+
+      - name: Upload Maven Surefire Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maven-surefire-test-reports
+          path: target/surefire-reports/
+
+      - name: Upload Persistent Test TXT Files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: persistent-test-txt-files
+          path: |
+            test-output/
+            **/*.txt
