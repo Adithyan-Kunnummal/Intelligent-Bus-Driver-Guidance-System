@@ -1,15 +1,15 @@
 package org.group9.Intelligent_Bus_Driver_Guidance_System;
 
+import java.nio.file.Path;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 class TestBusRepository {
 
@@ -85,5 +85,13 @@ class TestBusRepository {
 		repo.add(new Bus("87654321", 30, 60.0, "Electricity"));
 		assertEquals(2, repo.count());
 		assertEquals(2, new BusRepository(path).count());
+	}
+
+	@Test
+	void retrieveNonExistingBusReturnsNull() {
+		String path = filePath();
+		BusRepository repo = new BusRepository(path);
+
+		assertNull(repo.retrieve("99999999"));
 	}
 }

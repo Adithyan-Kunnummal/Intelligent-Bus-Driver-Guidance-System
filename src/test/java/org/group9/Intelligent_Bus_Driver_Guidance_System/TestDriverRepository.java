@@ -1,15 +1,15 @@
 package org.group9.Intelligent_Bus_Driver_Guidance_System;
 
+import java.nio.file.Path;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 class TestDriverRepository {
 
@@ -92,5 +92,13 @@ class TestDriverRepository {
 		repo.add(valid("45@#wxyzCD"));
 		assertEquals(2, repo.count());
 		assertEquals(2, new DriverRepository(path).count());
+	}
+
+	@Test
+	void retrieveNonExistingDriverReturnsNull() {
+		String path = filePath();
+		DriverRepository repo = new DriverRepository(path);
+
+		assertNull(repo.retrieve("99@@abcdZZ"));
 	}
 }
