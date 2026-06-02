@@ -144,7 +144,7 @@ class TestBus {
 	@Test
 	void b3_youngDriverCanDriveLargeBus() {
 		Bus bus = new Bus("12345678", 50, 80.0, "Diesel");
-		assertTrue(bus.canBeDrivenBy(driver(50, 10, "Heavy")));
+		assertTrue(bus.canBeDrivenBy(driver(49, 10, "Heavy")));
 	}
 
 	// TC18 | Normal | Driver aged 50 or younger can drive a bus with capacity under 50

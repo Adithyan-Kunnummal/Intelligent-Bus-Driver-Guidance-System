@@ -3,19 +3,36 @@ package org.group9.Intelligent_Bus_Driver_Guidance_System;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-
-import org.junit.jupiter.api.io.TempDir;
+import java.nio.file.Paths;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 class TestDriverRepository {
 
-	@TempDir
-	Path tempDir;
+	private final Path targetDir = Paths.get("test-output");
+    private String currentFileName;
 
-	private String filePath() {
-		return tempDir.resolve("drivers.txt").toString();
-	}
+    @BeforeEach
+    void setUp(TestInfo testInfo) throws IOException {
+        if (!Files.exists(targetDir)) {
+            Files.createDirectories(targetDir);
+        }
+        
+        // Dynamically set the file name using the current test method's name
+        // Example: "validDriverIsStoredAndPersisted.txt"
+        currentFileName = testInfo.getTestMethod().get().getName() + ".txt";
+        
+        // Optional: Clean up the specific file from a PREVIOUS run so the test starts fresh
+        Files.deleteIfExists(targetDir.resolve(currentFileName));
+    }
+
+    private String filePath() {
+        return targetDir.resolve(currentFileName).toString();
+    }
 
 	private Driver valid(String id) {
 		return new Driver(id, "John Doe", 5, "Heavy", "12|Main St|Springfield|VIC|AU", "01-01-1990");
