@@ -13,7 +13,7 @@ import org.junit.jupiter.api.TestInfo;
 
 class TestDriverRepository {
 
-	private final Path targetDir = Paths.get("test-output");
+	private final Path targetDir = Paths.get(System.getProperty("user.dir"), "test-output");
     private String currentFileName;
 
     @BeforeEach
