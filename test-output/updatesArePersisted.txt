@@ -1,1 +1,0 @@
-23#$abcdAB,John Doe,5,Light,99|New Rd|Geelong|VIC|AU,01-01-1990

@@ -12,6 +12,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
+/**
+ * Integration and persistence tests for DriverRepository.
+ * Tests are ordered to follow Test Case Table (TC1–TC6).
+ * Each test is tagged with its TC number and case type (normal / invalid / edge).
+ */
 class TestDriverRepository {
 
 	private final Path targetDir = Paths.get(System.getProperty("user.dir"), "test-output");
@@ -24,10 +29,9 @@ class TestDriverRepository {
         }
         
         // Dynamically set the file name using the current test method's name
-        // Example: "validDriverIsStoredAndPersisted.txt"
         currentFileName = testInfo.getTestMethod().get().getName() + ".txt";
         
-        // Optional: Clean up the specific file from a PREVIOUS run so the test starts fresh
+        //Clean up the specific file from a PREVIOUS run so the test starts fresh
         Files.deleteIfExists(targetDir.resolve(currentFileName));
     }
 
@@ -39,6 +43,9 @@ class TestDriverRepository {
 		return new Driver(id, "John Doe", 5, "Heavy", "12|Main St|Springfield|VIC|AU", "01-01-1990");
 	}
 
+	// ---- Driver Repository Integration Tests ----
+
+    // TC1 | Normal | A driver object with valid driver ID is successfully added and retrieved from a text file
 	@Test
 	void validDriverIsStoredAndPersisted() {
 		String path = filePath();
@@ -50,6 +57,7 @@ class TestDriverRepository {
 		assertEquals("12|Main St|Springfield|VIC|AU", loaded.getAddress());
 	}
 
+	// TC2 | Invalid | A driver object with invalid driver ID is rejected and not written to a text file
 	@Test
 	void invalidDriverIsRejectedAndNotPersisted() {
 		String path = filePath();
@@ -60,6 +68,7 @@ class TestDriverRepository {
 		assertEquals(0, new DriverRepository(path).count());
 	}
 	
+	// TC3 | Invalid | Attempting to append an existing driver ID to the repository is rejected to guarantee uniqueness
 	@Test
     void duplicateIdIsRejectedAndNotPersisted() {
         String path = filePath();
@@ -73,6 +82,7 @@ class TestDriverRepository {
                 "File must contain only the first successfully added driver");
     }
 
+	// TC4 | Normal | Valid driver field updates (license/address) correctly overwrite the driver records in the text file
 	@Test
 	void updatesArePersisted() {
 		String path = filePath();
@@ -85,6 +95,7 @@ class TestDriverRepository {
 		assertEquals("99|New Rd|Geelong|VIC|AU", loaded.getAddress());
 	}
 
+	// TC5 | Normal | Total repository records count matches accurately across text file reloads
 	@Test
 	void countReflectsStoredRecordsAcrossReload() {
 		String path = filePath();
@@ -95,6 +106,7 @@ class TestDriverRepository {
 		assertEquals(2, new DriverRepository(path).count());
 	}
 
+	// TC6 | Edge | Querying an unassigned or non-existent driver ID returns null
 	@Test
 	void retrieveNonExistingDriverReturnsNull() {
 		String path = filePath();

@@ -12,6 +12,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
+/**
+ * Integration tests for BusRepository.
+ * Tests are ordered to follow Test Case Table (TC1–TC6).
+ * Each test is tagged with its TC number and case type (normal / invalid / edge).
+ */
 class TestBusRepository {
 
 	private final Path targetDir = Paths.get(System.getProperty("user.dir"), "test-output");
@@ -35,6 +40,9 @@ class TestBusRepository {
         return targetDir.resolve(currentFileName).toString();
     }
 
+	// ---- Bus Repository Integration Tests ----
+
+	// TC1 | Normal | A bus object with valid bus ID is successfully added and retrieved from a text file
 	@Test
 	void validBusIsStoredAndPersisted() {
 		String path = filePath();
@@ -46,6 +54,7 @@ class TestBusRepository {
 		assertEquals(80.5, loaded.getFuelLevel());
 	}
 
+	// TC2 | Invalid | A bus object with invalid bus ID is rejected and not written to a text file
 	@Test
 	void invalidBusIsRejectedAndNotPersisted() {
 		String path = filePath();
@@ -55,6 +64,7 @@ class TestBusRepository {
 		assertEquals(0, new BusRepository(path).count());
 	}
 
+	// TC3 | Normal | Bus capacity reduction update overwrites and updates the record in the text file
 	@Test
 	void capacityDecreaseUpdateIsPersisted() {
 		String path = filePath();
@@ -66,6 +76,7 @@ class TestBusRepository {
 		assertEquals(35, loaded.getCapacity());
 	}
 	
+	// TC4 | Invalid | Bus capacity increase update is rejected, keeping original records intact in text file
 	 @Test
 	    void capacityIncreaseRejectedAndNotPersisted() {
 	        String path = filePath();
@@ -78,6 +89,7 @@ class TestBusRepository {
 	        assertEquals(40, reloaded.getCapacity());
 	    }
 
+	// TC5 | Normal | Total repository records count matches accurately across text file reloads
 	@Test
 	void countReflectsStoredRecordsAcrossReload() {
 		String path = filePath();
@@ -88,6 +100,7 @@ class TestBusRepository {
 		assertEquals(2, new BusRepository(path).count());
 	}
 
+	// TC6 | Edge | Querying an unassigned or non-existent bus ID returns null
 	@Test
 	void retrieveNonExistingBusReturnsNull() {
 		String path = filePath();

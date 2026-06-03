@@ -1,2 +1,0 @@
-23#$abcdAB,John Doe,5,Heavy,12|Main St|Springfield|VIC|AU,01-01-1990
-45@#wxyzCD,John Doe,5,Heavy,12|Main St|Springfield|VIC|AU,01-01-1990
