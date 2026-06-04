@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for the Bus conditions B1–B5. 
+ * Unit tests for the Bus conditions B1–B5.
  * Tests are ordered to match the Test Case Table (TC1–TC31).
  * Each test is tagged with its TC number and case type (normal / invalid / edge).
  */
