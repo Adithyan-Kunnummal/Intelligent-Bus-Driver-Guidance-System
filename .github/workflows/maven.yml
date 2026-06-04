@@ -29,35 +29,21 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Remove old test output files
+        run: rm -rf test-output
+
       - name: Run Maven tests
         run: mvn clean test
 
-      - name: List generated files
+      - name: List generated test output files
         if: always()
         run: |
-          echo "Current directory:"
-          pwd
-          echo "Project files:"
-          ls -la
-          echo "Target folder:"
-          ls -la target || true
-          echo "Surefire reports:"
-          ls -la target/surefire-reports || true
-          echo "Test output folder:"
+          echo "Generated test-output files:"
           ls -la test-output || true
 
-      - name: Upload Maven Surefire Reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: maven-surefire-test-reports
-          path: target/surefire-reports/
-
-      - name: Upload Persistent Test TXT Files
+      - name: Upload Test Output Text Files
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: persistent-test-txt-files
-          path: |
-            test-output/
-            **/*.txt
+          path: test-output/
